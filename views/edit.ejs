@@ -1,67 +1,40 @@
 <%- include('header.ejs') %>
-<main class="mw">
+<main class="mw edit">
     <h2>예지'S BLOG</h2>
-    <h3>게시글 수정</h3>
-    <form action="/update" method="post" class="writeCon editCon detailCon">
-        <label for="title">제목</label>
-        <input type="text" name="title" id="title" placeholder="제목을 입력해주세요.">
-        <label for="content">내용</label>
-        <textarea name="content" id="content" cols="30" rows="10" placeholder="내용을 입력해주세요."></textarea>
-        <label for="postImg">이미지 첨부</label>
-        <input type="file" id="postImg" name="postImg">
-        <label for="date" hidden>작성일</label>
-        <input type="date" id="date" name="date" hidden>
-        <div class="btnArea">
-            <button type="submit">수정</button>
-            <button class="delBtn" data-postnum="<%= post._id %>">삭제</button>
-            <a href="/">목록</a>
-        </div>
+    <h3>글수정</h3>
+    <form action="/edit" method="post" class="writeCon" enctype="multipart/form-data">
+        <input type="hidden" name="_method" value="PUT">
+            <label for="title">제목</label>
+            <input type="text" name="title" id="title" value="<%= posts.title %>" required>
+
+            <input type="text" id="id" name="id" value="<%= posts._id %>" hidden>
+
+            <label for="content">내용</label>
+            <textarea name="content" id="content" required><%= posts.content %></textarea>
+
+            <label for="postImg">이미지 첨부</label>
+            <input type="file" id="postImg" name="postImg">
+            <input type="text" id="postImgOld" name="postImgOld" value="<%= posts.postImgPath %>" hidden>
+            <div><img src="<%= posts.postImgPath %>" alt="<%= posts.postImgPath %>" style="width: 100%; margin-bottom: 1rem;"></div>
+
+            <label for="date" hidden>작성일</label>
+            <input type="date" id="date" name="date" hidden>
+
+            <div class="btnArea">
+                <button type="submit">수정</button>
+                <button class="btnCancel">취소</button>
+            </div>
     </form>
 </main>
 
 <script>
+    let today = new Date().toISOString().slice(0, 10)
     const date = document.querySelector('#date')
-    const today = new Date().toISOString().slice(0, 10)
     date.value = today
+
+    const btnCancel = document.querySelector('.btnCancel');
+    btnCancel.addEventListener('click', ()=>{
+        location.href='/'
+    });
 </script>
 <%- include('footer.ejs') %>
-
-
-
-<script>
-//     <p class="alertMessage"></p>
-
-//   const idInput = document.querySelector('input[name="id"]')
-//   const titleInput = document.querySelector('input[name="title"]')
-//   const goalsInput = document.querySelector('input[name="dateOfGoals"]')
-//   const todayInput = document.querySelector('input[name="today"]')
-//   const submitBtn = document.querySelector('.submitBtn')
-//   const alertMessage = document.querySelector('.alertMessage')
-
-//   idInput.value = `<%= post._id %>`
-//   titleInput.value = `<%= post.title %>`
-//   goalsInput.value = `<%= post.dateOfGoals %>`
-
-//   let today = new Date().toISOString().slice(0, 10)
-//   todayInput.value = today
-
-//   submitBtn.addEventListener('click', (e)=>{
-//     e.preventDefault()
-
-//     let title = titleInput.value
-//     let dateOfGoals = goalsInput.value
-
-//     if(!title || !dateOfGoals){
-//       alertMessage.innerHTML = '입력해주세요.'
-//       return
-//     }
-
-//     if(new Date(dateOfGoals) < new Date(today)){
-//       alertMessage.innerHTML = '오늘 날짜 이후로 선택해주세요.'
-//       return
-//     }
-
-//     document.querySelector('form').submit()
-//   })
-</script>
-

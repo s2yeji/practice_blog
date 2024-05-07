@@ -1,45 +1,55 @@
 <%- include('header.ejs') %>
-<main class="mw">
+<main class="mw detail">
     <h2>예지'S BLOG</h2>
-
-    <div class="detailCon">
-        <div class="cont">
-            <div class="img"><img src="/<%= post.postImgPath %>" alt=""></div>
-            <label for="date" hidden>작성일</label>
-            <input type="date" id="date" name="date" hidden>   
-            <p class="title"><%= post.title %></p>
-            <p class="content"><%= post.content %></p>
+    <!-- <h3>상세페이지</h3> -->
+    <div>
+        <h4><%= posts.title %></h4>
+        <p class="writeInfo">홍길동 / <%= posts.date %> / 좋아요: 0</p>
+        <div class="imgArea">
+            <% if(posts.postImgPath == null){ %>
+                <img src="/img-not-found.jpg" alt="이미지 없음">
+            <% } else { %>
+                <img src="<%= posts.postImgPath %>" alt="<%= posts.postImgPath %>">
+            <% } %>
         </div>
-        <div class="btnArea">
-            <a href="/edit/<%= post._id %>">수정</a>
-            <button class="delBtn" data-postnum="<%= post._id %>">삭제</button>
-            <a href="/">목록</a>
-        </div>
+        <div class="txtArea"><%= posts.content %></div>
+    </div>
+    <div class="btnArea"> 
+        <button class="btnEdit">수정</button>
+        <button class="btnDel">삭제</button>
+        <button class="btnList">목록</button>
+        <button class="btnLike">좋아요</button>
     </div>
 </main>
 
 <script>
-    const date = document.querySelector('#date');
-    const today = new Date().toISOString().slice(0, 10);
-    date.value = today;
+    const btnList = document.querySelector('.btnList');
+    btnList.addEventListener('click', ()=>{
+        location.href='/'
+    });
 
-    const delBtn = document.querySelector('.delBtn')
-    delBtn.addEventListener('click', (e)=>{
-        fetch('/delete', {
-            method: 'POST',
+    const btnEdit = document.querySelector('.btnEdit');
+    btnEdit.addEventListener('click', ()=>{
+        location.href=`/edit/<%= posts._id %>`
+    });
+
+    const btnDel = document.querySelector('.btnDel');
+    btnDel.addEventListener('click', ()=>{
+        const postId = `<%= posts._id %>`
+        fetch(`/delete/${postId}`, {
+            method: 'POST', 
             headers: {
-                'Content-Type': 'application/json'
+                'Content-type': 'application/json',
             },
-            body: JSON.stringify({
-                postNum: e.target.dataset.postnum
-            })
+            body: JSON.stringify({_method: 'DELETE'})
         }).then(res => {
+            console.log(res);
             if(res.ok){
+                // 삭제 성공 시
+                alert('삭제 완료')
                 location.href='/'
-            } else {
-                console.log('삭제 실패');
             }
         })
-    })
+    });
 </script>
 <%- include('footer.ejs') %>

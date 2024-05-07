@@ -1,0 +1,64 @@
+<%- include('header.ejs') %>
+<main class="mw login">
+    <h2>예지'S BLOG</h2>
+    <h3>로그인</h3>
+    <form action="/login" method="post" class="writeCon">
+        <label for="userId">아이디</label>
+        <input type="text" id="userId" name="userId">
+
+        <label for="pw">비밀번호</label>
+        <input type="password" id="pw" name="pw">
+
+        <button class="btnLogin">로그인</button>
+    </form>
+    <p class="alertModal"></p>
+    <div>아직 회원이 아니신가요? <a href="/signup">회원가입</a></div>
+</main>
+
+<script>
+    const btnLogin = document.querySelector('.btnLogin');
+    const alertModal = document.querySelector('.alertModal');
+    const userId = document.querySelector('#userId');
+    const pw = document.querySelector('#pw');
+
+    btnLogin.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        if(userId.value.trim() === ''){
+            alertModal.innerHTML = `아이디를 입력해주세요.`;
+            userId.focus();
+            return;
+        }
+
+        if(!/^[a-zA-Z]+$/.test(userId.value.trim())){
+            alertModal.innerHTML = `아이디는 영문으로 작성해주세요.`
+            userId.focus();
+            return;
+        }
+
+        if(pw.value.trim() === ''){
+            alertModal.innerHTML = `패스워드를 입력해주세요.`;
+            pw.focus();
+            return;
+        }
+
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: userId.value,
+                pw: pw.value
+            })
+        })
+
+        console.log(response);
+        if(response.status === 401) {
+            alertModal.innerHTML = `비밀번호가 틀렸습니다.`
+        } else if (response.status === 404){
+            alertModal.innerHTML=`${userId.value} 는 없는 아이디입니다.`
+        } else if(response.status === 200){
+            location.href = '/'
+        }
+    })
+</script>
+<%- include('footer.ejs') %>

@@ -1,17 +1,21 @@
 <%- include('header.ejs') %>
-<main class="mw">
+<main class="mw write">
     <h2>예지'S BLOG</h2>
     <!-- <h3>글쓰기</h3> -->
     <form action="/write" method="post" class="writeCon" enctype="multipart/form-data">
         <label for="title">제목</label>
-        <input type="text" name="title" id="title" placeholder="제목을 입력해주세요.">
+        <input type="text" name="title" id="title" placeholder="제목을 입력해주세요." required>
         <label for="content">내용</label>
-        <textarea name="content" id="content" cols="30" rows="10" placeholder="내용을 입력해주세요."></textarea>
+        <textarea name="content" id="content" cols="30" rows="10" placeholder="내용을 입력해주세요." required></textarea>
         <label for="postImg">이미지 첨부</label>
         <input type="file" id="postImg" name="postImg">
         <label for="date" hidden>작성일</label>
         <input type="date" id="date" name="date" hidden>
-        <button type="submit">글쓰기</button>
+
+        <div class="btnArea">
+            <button type="submit">글쓰기</button>
+            <button class="btnCancel">취소</button>
+        </div>
     </form>
 </main>
 
@@ -19,5 +23,10 @@
     const date = document.querySelector('#date')
     const today = new Date().toISOString().slice(0, 10)
     date.value = today
+
+    const btnCancel = document.querySelector('.btnCancel');
+    btnCancel.addEventListener('click', ()=>{
+        location.href='/'
+    });
 </script>
 <%- include('footer.ejs') %>

@@ -14,7 +14,7 @@
       referrerpolicy="no-referrer"
     />
     <link rel="stylesheet" href="/style.css" />
-    <script src="/common.js" defer></script>
+    <!-- <script src="/common.js" defer></script> -->
   </head>
   <body>
     <div class="wrap">
@@ -33,3 +33,30 @@
         </div>
         <div class="ham"><i class="fa-solid fa-bars"></i></div>
       </header>
+
+      <script>
+        const hd = document.querySelector('.hd');
+        const hamBtn = document.querySelector('.ham');
+        const darkmode = document.querySelector('.darkmode');
+
+        hamBtn.addEventListener('click', () => {
+          hd.classList.toggle('on');
+        });
+
+        const darkModeStatus = localStorage.getItem('darkMode');
+        if(darkModeStatus === 'on'){
+          document.body.classList.add('dark')
+          darkmode.classList.add('on');
+        }
+
+        darkmode.addEventListener('click', (e) => {
+          e.target.classList.toggle('on');
+          document.body.classList.toggle('dark');
+
+          if(document.body.classList.contains('dark')){
+            localStorage.setItem('darkMode', 'on')
+          } else {
+            localStorage.setItem('darkMode', 'off')
+          }
+        });
+      </script>

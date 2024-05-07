@@ -322,7 +322,7 @@ main h3 {
 }
 .lists .info > div {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   font-size: 0.85em;
   color: #777;
@@ -367,9 +367,6 @@ footer {
 .writeCon textarea {
   height: 200px;
 }
-.writeCon button {
-  padding: 1rem;
-}
 @media (max-width: 800px){
   .writeCon {
     flex-wrap: nowrap;
@@ -381,23 +378,39 @@ footer {
 }
 
 /* detail */
-.detailCon .cont { text-align: center; 
+.detail { 
+  text-align: center; 
   border-bottom: 1px solid #eee;
   padding-bottom: 1rem;
   margin-bottom: 2rem;
 }
-.detailCon .img { margin-bottom: 1rem; }
-.detailCon .img img { width: 100%; }
-.detailCon .title { font-weight: bold; font-size: 2rem; margin-bottom: 1rem; }
-.detailCon .content {}
-.detailCon .btnArea {
+.detail .imgArea { 
+  margin-bottom: 1rem; 
+}
+.detail .imgArea img { 
+  width: 100%; 
+}
+.detail h4 { 
+  font-weight: bold; 
+  margin-bottom: 1rem; 
+}
+.detail .writeInfo {
+  font-size: 0.8em;
+  color: #444;
+  margin-bottom: 1rem;
+}
+.detail .txtArea  {
+  font-size: 0.85em;
+}
+
+.btnArea {
   display: flex;
   justify-content: flex-end;
   align-items: center;
   gap: 0.5em;
   width: 100%;
 }
-.detailCon .btnArea > * {
+.btnArea > * {
   font-size: 0.8em;
   background: #eee;
   padding: 0.5em 1em;
@@ -409,17 +422,48 @@ footer {
   transition: 0.5s;
   cursor: pointer;
 }
-.detailCon .btnArea > *:hover {
+.btnArea > *:hover {
   background-color: #222;
   color: #fff;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
 }
 
-.dark .detailCon .btnArea > * {
+.alertModal {
+  color: #d21111;
+  font-size: 0.85em;
+  margin-bottom: 2rem;
+}
+
+.login > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+  padding: 3rem;
+  background-color: #f9f9f9;
+  border-radius: 1rem;
+  font-size: 0.8em;
+  color: #777;
+  transition: 0.5s;
+}    
+.login > div:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 10%);
+}
+.login > div > a {
+  display: inline-block;
+  padding: 1.5rem 0 0;
+  border-bottom: 1px solid #222;
+  font-family: "pretendard-regular";
+  font-size: 1.1em;
+  color: #222;
+}
+
+.dark .btnArea > * {
   background-color: transparent;
   border: 1px solid #eee;
   color: #fff;
-}.dark .detailCon .btnArea > *:hover {
+}
+.dark .btnArea > *:hover {
   background-color: #fff;
   color: #222;
   border: 1px solid #fff;
