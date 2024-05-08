@@ -468,3 +468,15 @@ footer {
   color: #222;
   border: 1px solid #fff;
 }
+
+.personal ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+.personal ul > li {
+  width: 20%;
+}
+.personal li img {
+  width: 100%;
+}

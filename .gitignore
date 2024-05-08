@@ -1,3 +1,6 @@
 .env
 
-node_modules/
+server copy.js
+server copy 2.js
+
+node_modules
