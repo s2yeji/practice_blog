@@ -56,8 +56,29 @@ const getDB = async () => {
 app.get('/', async (req, res) => {
   try{
     const db = await getDB();
-    const posts = await db.collection('posts').find().toArray();
+    const posts = await db.collection('posts').find().sort({date: -1}).limit(6).toArray();
     res.render('index', {posts, user: req.user})
+  }catch(e){
+    console.error(e);
+  }
+})
+
+// 3개씩 추가되는 포스트를 갖고 오는 기능
+app.get('/getPosts', async (req, res)=>{
+  const page = req.query.page || 1;
+  // const postsPerPage = req.query.postsPerPage || 3;
+  const postsPerPage = 3;
+  const skip = 7 + (page - 1) * postsPerPage; // 1:0, 2:3
+
+  try{
+    const db = await getDB();
+    const posts = await db.collection('posts')
+      .find()
+      .sort({date: -1})
+      .skip(skip)
+      .limit(postsPerPage)
+      .toArray();
+    res.json(posts);
   }catch(e){
     console.error(e);
   }
@@ -80,8 +101,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.post('/write', upload.single('postImg'), async (req, res) => {
-  const { title, content, date, userId } = req.body;
+  const { title, content } = req.body;
   const postImg = req.file ? req.file.filename : null;
+  const date = new Date().toISOString().slice(0, 10);
 
   try {
       let db = await getDB();
@@ -96,12 +118,42 @@ app.post('/write', upload.single('postImg'), async (req, res) => {
           postImgPath: postImg ? `/uploads/${postImg}` : null,
       });
       await db.collection('counter').updateOne({ name: 'counter' }, { $inc: { totalPost: 1 } });
-      await db.collection('like').insertOne({post_id: result.totalPost + 1, totalLike: 0, likeMember: []})
+      await db.collection('like').insertOne({
+        post_id: result.totalPost + 1, 
+        totalLike: 0, 
+        likeMember: []
+      })
       res.redirect('/');
   } catch (error) {
       console.log(error);
   }
 });
+
+// /comment/글번호
+app.post('/comment/:id', async (req, res)=>{
+  const post_id = parseInt(req.params.id);
+  const {comment} = req.body;
+  const date = new Date();
+  console.log('------', post_id);
+  console.log('------', comment);
+  console.log('------', date);
+
+  try{
+    const db = await getDB();
+    await db.collection('comment').insertOne({
+      post_id,
+      comment,
+      date,
+      userId: req.user.userId,
+      userName: req.user.userName
+    })
+    res.json({success: true});
+  }catch(e){
+    console.error(e);
+    res.json({success: false});
+  }
+})
+
 
 // detail
 app.get('/detail/:id', async (req, res) => {
@@ -110,7 +162,8 @@ app.get('/detail/:id', async (req, res) => {
     const db = await getDB();
     const posts = await db.collection('posts').findOne({_id: id});
     const like = await db.collection('like').findOne({post_id: id});
-    res.render('detail', {posts, user: req.user, like});
+    const comments = await db.collection('comment').find({post_id: id}).sort({date: -1}).toArray();
+    res.render('detail', {posts, user: req.user, like, comments});
   }catch(e){
     console.error(e);
   }

@@ -5,7 +5,13 @@
     <div>
         <h4><%= posts.title %></h4>
         <p class="writeInfo">
-            <a href="/personal/<%= posts.userId %>"><%= posts.userName %></a> / <%= posts.date %> / 좋아요: <%= like.totalLike %>
+            <a href="/personal/<%= posts.userId %>"><%= posts.userName %></a> / 
+            <%
+            const serverPostDate = new Date(posts.date)
+            const datePostStr = serverPostDate.toISOString().slice(0,10)
+            %>
+            <%= datePostStr %> / 
+            좋아요: <%= like.totalLike %>
             <% if(like.likeMember && Array.isArray(like.likeMember)){ %>
                 <%- like.likeMember.map(m => `<a href="/personal/${m}">${m}</a>`) %>
             <% } %>
@@ -27,6 +33,38 @@
         <button class="btnList">목록</button>
         <button class="btnLike">좋아요</button>
     </div>
+
+    <div class="comments">
+        <h3>댓글</h3>
+        <% if(user){ %>
+        <form id="commentForm">
+            <textarea name="commentText" id="commentText" placeholder=""></textarea>
+            <button type="submit">댓글작성</button>
+        </form>
+        <% } else { %>
+            <p>댓글을 작성하시려면 <a href="/login">로그인</a>해주세요.</p>
+        <% } %>
+
+        <ul class="commentList">
+            <% if(comments && comments.length > 0){ %>
+                <% comments.map(data => { %>
+                    <li class="comment">
+                        <p><%= data.comment %></p>
+                        <p><a href="/personal/<%= data.userId %>"><%= data.userName %></a></p>
+                        <p>
+                            <%
+                            const serverDate = new Date(data.date)
+                            const dateStr = serverDate.toISOString().slice(0,10)
+                            %>
+                            <%= dateStr %>
+                        </p>
+                    </li>
+                <% }) %>
+            <% } else { %>
+                <li>등록된 댓글이 없습니다.</li>
+            <% } %>
+        </ul>
+    </div>  
 </main>
 
 <script>
@@ -79,6 +117,34 @@
                 }
             })
         }
+    })
+
+    const commentForm = document.querySelector('#commentForm');
+    const commentText = document.querySelector('#commentText');
+    commentForm.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        const comment = commentText.value.trim();
+
+        if(!comment){
+            alert('댓글을 작성해주세요.');
+            return;
+        }
+
+        fetch('/comment/<%= posts._id %>', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({comment})
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success){
+                location.reload();
+            } else {
+                alert('댓글이 작성되지 않았습니다. 다시 한번 시도해주세요.')
+            }
+        })
     })
 </script>
 <%- include('footer.ejs') %>

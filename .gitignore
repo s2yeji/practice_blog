@@ -1,7 +1,12 @@
-.env
+*.env
 
 server copy.js
 server copy 2.js
 server copy 3.js
+server copy 4.js
 
-node_modules
+public/uploads/
+node_modules/
+dist/
+build/
+venv/

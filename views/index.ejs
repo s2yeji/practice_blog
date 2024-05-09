@@ -19,7 +19,16 @@
                     <div class="info">
                         <h4 class="title"><%= post.title %></h4>
                         <p class="desc"><%= post.content %></p>
-                        <div><span class="writer"><%= post.userName %></span><span class="date"><%= post.date %></span></div>
+                        <div>
+                            <span class="writer"><%= post.userName %></span>
+                            <span class="date">
+                                <%
+                                const serverPostDate = new Date(post.date)
+                                const datePostStr = serverPostDate.toISOString().slice(0,10)
+                                %>
+                                <%= datePostStr %>
+                            </span>
+                        </div>
                     </div>
                     <a class="more" href="/detail/<%= post._id %>">자세히 보기</a>
                 </li>
@@ -27,4 +36,43 @@
         <% } %>
     </ul>
 </main>
+
+<script>
+    let page = 1;
+    let inProgress = false;
+
+    window.onscroll = async () => {
+        if (inProgress) return;
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 10) { 
+            inProgress = true;
+            page++;
+            const response = await fetch(`/getPosts?page=${page}&postsPerPage=3`); 
+            const newPosts = await response.json();
+            const ul = document.querySelector('.lists');
+            newPosts.forEach(post => {
+                const li = document.createElement('li');
+                li.className = 'card';
+                li.innerHTML = `
+                    <p hidden>${post._id}</p>
+                    <div class="imgArea">
+                        ${post.postImgPath == null ? '<img src="/img-not-found.jpg" alt="이미지 없음">' : `<img src="${post.postImgPath}" alt="${post.title}">`}
+                    </div>
+                    <div class="info">
+                        <p>
+                            <span class="user">${post.userName}</span> / 
+                            <span class="createDate">
+                                ${new Date(post.date).toISOString().slice(0,10)}
+                            </span>
+                        </p>
+                        <h4 class="title">${post.title}</h4>
+                        <p class="desc">${post.content}</p>
+                    </div>
+                    <a class="more" href="/detail/${post._id}">자세히보기</a>
+                `;
+                ul.appendChild(li);
+            });
+            inProgress = false;
+        }
+    };
+</script>
 <%- include('footer.ejs') %>

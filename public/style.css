@@ -480,3 +480,35 @@ footer {
 .personal li img {
   width: 100%;
 }
+
+.comments {
+  text-align: left;
+  background-color: #222;
+  color: #fff;
+  padding: 2rem;
+  margin: 1rem 0 0;
+  border-radius: 1rem;
+}
+.comments #commentForm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+  gap: 1rem;
+}
+.comments textarea {
+  flex: 1;
+  padding: 1rem;
+  min-height: 70px;
+}
+.comments .comment {
+  padding: 1rem 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.comments .comment p:first-of-type {
+  flex: 1;
+  line-height: 1.3;
+}
